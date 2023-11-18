@@ -23,10 +23,9 @@ h1 {
 
 }
 
-
 .column__wrapper {
   border: 1px solid white;
-  padding: 10px 10px;
+  padding: 20px 10px;
   border-radius: 10px;
   color: white;
   transition: background-color 0.3s ease;
@@ -39,7 +38,8 @@ h1 {
 
 .column__wrapper p {
   margin: 0;
-  font-size: 16px;
+  font-size: 34px;
+  font-weight: 900;
 }
 
 
@@ -72,7 +72,7 @@ h1 {
 .characters {
   list-style: none;
   padding-left: 0;
-  min-width: 183px;
+  min-width: 283px;
 }
 
 .characters li {
@@ -88,6 +88,7 @@ h1 {
 
 .characters p {
   max-width: none;
+  font-size: 1.5rem;
   font-weight: bold;
   margin: 0;
 }

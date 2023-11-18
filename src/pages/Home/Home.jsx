@@ -73,9 +73,9 @@ function Home(props) {
                 <header className="App-header">
                     <DragDropContext onDragEnd={handleOnDragEnd}>
                         {data && data.length > 0 && data.map((column, index) => {
-                            return (<div className="column__wrapper">
+                            return (<div className="column__wrapper" key={column.column} >
                                 <p>{column.column}</p>
-                                <Droppable key={column.column} droppableId={column.column}>
+                                <Droppable droppableId={column.column}>
                                     {(provided) => (
                                         <ul className="characters" {...provided.droppableProps} ref={provided.innerRef}>
                                             {column.tasks && column.tasks.map((task, index) => {
@@ -88,8 +88,11 @@ function Home(props) {
                                                         </li>)}
                                                 </Draggable>)
                                             })}
+                                            {provided.placeholder}
                                         </ul>
+
                                     )}
+
                                 </Droppable>
                             </div>)
                         })}
