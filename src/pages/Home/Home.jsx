@@ -65,35 +65,40 @@ function Home(props) {
     }
 
     return (
-        <div className="App">
-            <header className="App-header">
-                <h1>Final Space Characters</h1>
-                <DragDropContext onDragEnd={handleOnDragEnd}>
-                    {data && data.length > 0 && data.map((column, index) => {
-                        return (<>
-                            <p>{column.column}</p>
-                            <Droppable key={column.column} droppableId={column.column}>
-                                {(provided) => (
-                                    <ul className="characters" {...provided.droppableProps} ref={provided.innerRef}>
-                                        {column.tasks && column.tasks.map((task, index) => {
-                                            return (<Draggable key={task._id} draggableId={task._id} index={index}>
-                                                {(provided) => (
-                                                    <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                                        <p>
-                                                            {task.content}
-                                                        </p>
-                                                    </li>)}
-                                            </Draggable>)
-                                        })}
-                                    </ul>
-                                )}
-                            </Droppable>
-                        </>)
-                    })}
-                </DragDropContext>
-            </header>
+        <>
+            {/*<div className="overlay"></div>*/}
+            <div className="App">
+                <div className="overlay"></div>
+                <h1>Trello</h1>
+                <header className="App-header">
+                    <DragDropContext onDragEnd={handleOnDragEnd}>
+                        {data && data.length > 0 && data.map((column, index) => {
+                            return (<div className="column__wrapper">
+                                <p>{column.column}</p>
+                                <Droppable key={column.column} droppableId={column.column}>
+                                    {(provided) => (
+                                        <ul className="characters" {...provided.droppableProps} ref={provided.innerRef}>
+                                            {column.tasks && column.tasks.map((task, index) => {
+                                                return (<Draggable key={task._id} draggableId={task._id} index={index}>
+                                                    {(provided) => (
+                                                        <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                                            <p>
+                                                                {task.content}
+                                                            </p>
+                                                        </li>)}
+                                                </Draggable>)
+                                            })}
+                                        </ul>
+                                    )}
+                                </Droppable>
+                            </div>)
+                        })}
+                    </DragDropContext>
+                </header>
 
-        </div>
+            </div>
+        </>
+
     );
 }
 
