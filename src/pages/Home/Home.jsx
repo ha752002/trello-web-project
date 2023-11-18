@@ -1,81 +1,81 @@
 import React, {useEffect, useState} from 'react';
 import Login from "../Login/Login.jsx";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchTask, taskSlice} from "../../redux/slice/taskSlice.js";
+import {fetchTask, taskSlice, updateTask} from "../../redux/slice/taskSlice.js";
 import {PENDING} from "../../constant/apiStatus.js";
 import {loadingSlice} from "../../redux/slice/loadingSlice.js";
 import {useNavigate} from "react-router-dom";
 import {removeLocalStorage} from "../../utils/localStorage.js";
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
-
-const {turnOn, turnOff} = loadingSlice.actions;
-const {reset: taskReset} = taskSlice.actions;
 import "./Home.css"
 
-const finalSpaceCharacters = [
-    {
-        id: 'gary',
-        name: 'Gary Goodspeed',
-    },
-    {
-        id: 'cato',
-        name: 'Little Cato',
-    },
-    {
-        id: 'kvn',
-        name: 'KVN',
-    },
-    {
-        id: 'mooncake',
-        name: 'Mooncake',
-    },
-    {
-        id: 'quinn',
-        name: 'Quinn Ergon',
-    }
-]
+const {turnOn, turnOff} = loadingSlice.actions;
+const {reset: taskReset, changeColumn} = taskSlice.actions;
 
 function Home(props) {
     const dispatch = useDispatch();
     const {data, error, status} = useSelector(state => state.task)
     const navigate = useNavigate();
-    const [characters, updateCharacters] = useState(finalSpaceCharacters);
+
+    const updateData = () => {
+        const columnData = structuredClone(data);
+        const taskList = columnData.reduce((result, column) => {
+            const tasks = column.tasks.map(task => {
+                return {
+                    column: task.column,
+                    content: task.content,
+                    columnName: column.columnName
+                }
+            })
+            return [...result, ...tasks]
+        }, [])
+        dispatch(updateTask(taskList))
+    }
 
     useEffect(() => {
         dispatch(fetchTask());
-        console.log(data)
-
-        const tasksByColumn = {};
-        data.columns.forEach(column => {                                                                                                                                                                    //////////////////////;lkjl;
-            const columnName = column.column;
-            tasksByColumn[columnName] = [];
-        });
-
-        data.tasks.forEach(task => {
-            const column = task.column;
-            tasksByColumn[column] = [...tasksByColumn[column], task];
-        });
-
     }, [dispatch])
-
     useEffect(() => {
         status === PENDING ? dispatch(turnOn()) : dispatch(turnOff());
+        console.log(data)
     }, [status]);
-
     useEffect(() => {
         if (error && error.code === 401) {
             removeLocalStorage('apiKey', 'taskData')
-            navigate('/login')
             dispatch(taskReset());
+            navigate('/login')
         }
     }, [error]);
+    useEffect(() => {
+        if (data && data.length === 0){
+            const taskList = [
+                {
+                    "column": "doing",
+                    "content": "Get Money",
+                    "columnName": "Doing"
+                },
+                {
+                    "column": "done",
+                    "content": "Eating in Home",
+                    "columnName": "Done"
+                },
+                {
+                    "column": "todo",
+                    "content": "Loading....",
+                    "columnName": "Todo"
+                }
+        ]
+            dispatch(updateTask(taskList))
+        }
+    }, []);
+
 
     function handleOnDragEnd(result) {
-        if (!result.destination) return;
-        const items = Array.from(characters);
-        const [reorderedItem] = items.splice(result.source.index, 1);
-        items.splice(result.destination.index, 0, reorderedItem);
-        updateCharacters(items);
+        if (!result.destination || (result.source.index === result.destination.index && result.source.droppableId === result.destination.droppableId)) {
+            return;
+        }
+        dispatch(changeColumn(result))
+        updateData()
     }
 
     return (
@@ -83,36 +83,33 @@ function Home(props) {
             <header className="App-header">
                 <h1>Final Space Characters</h1>
                 <DragDropContext onDragEnd={handleOnDragEnd}>
-                    <Droppable droppableId="characters">
-                         {(provided) => (
-                            <ul className="characters" {...provided.droppableProps} ref={provided.innerRef}>
-                                {characters.map(({id, name, thumb}, index) => {
-                                    return (
-                                        <Draggable key={id} draggableId={id} index={index}>
-                                            {(provided) => (
-                                                <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                                    {/*<div className="characters-thumb">*/}
-                                                    {/*    <img src={thumb} alt={`${name} Thumb`}/>*/}
-                                                    {/*</div>*/}
-                                                    <p>
-                                                        {name}
-                                                    </p>
-                                                </li>
-                                            )}
-                                        </Draggable>
-                                    );
-                                })}
-                                {provided.placeholder}
-                            </ul>
-                        )}
-                    </Droppable>
+                    {data && data.length > 0 && data.map((column, index) => {
+                        return (<>
+                            <p>{column.column}</p>
+                            <Droppable key={column.column} droppableId={column.column}>
+                                {(provided) => (
+                                    <ul className="characters" {...provided.droppableProps} ref={provided.innerRef}>
+                                        {column.tasks && column.tasks.map((task, index) => {
+                                            return (<Draggable key={task._id} draggableId={task._id} index={index}>
+                                                {(provided) => (
+                                                    <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                                        <p>
+                                                            {task.content}
+                                                        </p>
+                                                    </li>)}
+                                            </Draggable>)
+                                        })}
+                                    </ul>
+                                )}
+                            </Droppable>
+                        </>)
+                    })}
                 </DragDropContext>
             </header>
-            <p>
-                Images from <a href="https://final-space.fandom.com/wiki/Final_Space_Wiki">Final Space Wiki</a>
-            </p>
+
         </div>
     );
 }
 
 export default Home;
+

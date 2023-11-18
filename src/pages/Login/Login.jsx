@@ -34,7 +34,9 @@ function Login({toggleLoading}) {
     }
     return (
         <>
+
             <div className={clsx(Styles.form_login)}>
+                <div  className={clsx(Styles.overlay)}></div>
                 <form onSubmit={handleSubmit(onSubmit)} className={clsx(Styles.form_login_wrapper)}>
                     <input
                         {...register("email")}

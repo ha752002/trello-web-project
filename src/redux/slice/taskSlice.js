@@ -1,17 +1,46 @@
 import {IDLE, PENDING} from "../../constant/apiStatus.js";
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, current} from "@reduxjs/toolkit";
 import {apiClient} from "../../services/api.js";
 
 const initialState = {
-    data: {},
+    data: null,
     error: null,
     status: IDLE
 };
 
+const resolveResponse = (data) => {
+    if (data && data.columns && data.tasks) {
+        const columns = data.columns;
+        const tasks = data.tasks;
+        return columns.map(column => {
+            const tasksFiltered = tasks.filter(task => column.column === task.column)
+            return {
+                ...column,
+                tasks: tasksFiltered
+            }
+        });
+    }
+}
+
 export const fetchTask = createAsyncThunk("task/fetch", async (requestParams = null, thunkApi) => {
     try {
         const response = await apiClient.get("/tasks");
-        return response.data;
+        const data = response.data
+        return resolveResponse(data)
+    } catch (e) {
+        console.log(e);
+        return thunkApi.rejectWithValue({
+            code: e.response.status,
+            message: e.response.data.message
+        })
+    }
+})
+
+export const updateTask = createAsyncThunk("task/update", async (body, thunkApi) => {
+    try {
+        const response = await apiClient.post("/tasks", body);
+        const data = response.data
+        return resolveResponse(data)
     } catch (e) {
         console.log(e);
         return thunkApi.rejectWithValue({
@@ -25,6 +54,21 @@ export const taskSlice = createSlice({
     name: 'task',
     initialState,
     reducers: {
+        changeColumn: (state, action) => {
+            const source = action.payload.source;
+            const destination = action.payload.destination;
+
+            const sourceColumn = state.data.find(column => {
+                return column.column === source.droppableId
+            })
+            const destinationColumn = state.data.find(column => {
+                return column.column === destination.droppableId
+            })
+
+            const [reorderedTask] = sourceColumn.tasks.splice(source.index, 1);
+            reorderedTask.column = destinationColumn.column
+            destinationColumn.tasks.splice(destination.index, 0, reorderedTask)
+        },
         reset: (state) => {
             state.error = null;
             state.data = {};
@@ -44,6 +88,10 @@ export const taskSlice = createSlice({
             .addCase(fetchTask.rejected, (state, action) => {
                 state.status = IDLE;
                 state.error = action.payload;
+            })
+            .addCase(updateTask.fulfilled, (state, action) => {
+                state.status = IDLE;
+                state.error = null
             })
     }
 });
