@@ -14,31 +14,18 @@ const {reset: taskReset, changeColumn} = taskSlice.actions;
 
 function Home(props) {
     const dispatch = useDispatch();
-    const {data, error, status} = useSelector(state => state.task)
+    const {data, error, status, success} = useSelector(state => state.task)
     const navigate = useNavigate();
-
-    const updateData = () => {
-        const columnData = structuredClone(data);
-        const taskList = columnData.reduce((result, column) => {
-            const tasks = column.tasks.map(task => {
-                return {
-                    column: task.column,
-                    content: task.content,
-                    columnName: column.columnName
-                }
-            })
-            return [...result, ...tasks]
-        }, [])
-        dispatch(updateTask(taskList))
-    }
 
     useEffect(() => {
         dispatch(fetchTask());
     }, [dispatch])
+
     useEffect(() => {
         status === PENDING ? dispatch(turnOn()) : dispatch(turnOff());
         console.log(data)
     }, [status]);
+
     useEffect(() => {
         if (error && error.code === 401) {
             removeLocalStorage('apiKey', 'taskData')
@@ -46,8 +33,9 @@ function Home(props) {
             navigate('/login')
         }
     }, [error]);
+
     useEffect(() => {
-        if (data && data.length === 0){
+        if (success && data && data.length === 0) {
             const taskList = [
                 {
                     "column": "doing",
@@ -64,18 +52,16 @@ function Home(props) {
                     "content": "Loading....",
                     "columnName": "Todo"
                 }
-        ]
+            ]
             dispatch(updateTask(taskList))
         }
-    }, []);
-
+    }, [success]);
 
     function handleOnDragEnd(result) {
         if (!result.destination || (result.source.index === result.destination.index && result.source.droppableId === result.destination.droppableId)) {
             return;
         }
         dispatch(changeColumn(result))
-        updateData()
     }
 
     return (
@@ -112,4 +98,3 @@ function Home(props) {
 }
 
 export default Home;
-

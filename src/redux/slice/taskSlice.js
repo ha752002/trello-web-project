@@ -5,7 +5,8 @@ import {apiClient} from "../../services/api.js";
 const initialState = {
     data: null,
     error: null,
-    status: IDLE
+    status: IDLE,
+    success: false,
 };
 
 const resolveResponse = (data) => {
@@ -35,7 +36,6 @@ export const fetchTask = createAsyncThunk("task/fetch", async (requestParams = n
         })
     }
 })
-
 export const updateTask = createAsyncThunk("task/update", async (body, thunkApi) => {
     try {
         const response = await apiClient.post("/tasks", body);
@@ -49,7 +49,6 @@ export const updateTask = createAsyncThunk("task/update", async (body, thunkApi)
         })
     }
 })
-
 export const taskSlice = createSlice({
     name: 'task',
     initialState,
@@ -68,6 +67,18 @@ export const taskSlice = createSlice({
             const [reorderedTask] = sourceColumn.tasks.splice(source.index, 1);
             reorderedTask.column = destinationColumn.column
             destinationColumn.tasks.splice(destination.index, 0, reorderedTask)
+
+            const taskList = state.data.reduce((result, column) => {
+                const tasks = column.tasks.map(task => {
+                    return {
+                        column: task.column,
+                        content: task.content,
+                        columnName: column.columnName
+                    }
+                })
+                return [...result, ...tasks]
+            }, [])
+            apiClient.post("/tasks", taskList)
         },
         reset: (state) => {
             state.error = null;
@@ -75,7 +86,6 @@ export const taskSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        // --- Xử lý trong reducer với case pending / fulfilled / rejected ---
         builder
             .addCase(fetchTask.pending, (state) => {
                 state.status = PENDING;
@@ -83,6 +93,7 @@ export const taskSlice = createSlice({
             .addCase(fetchTask.fulfilled, (state, action) => {
                 state.status = IDLE;
                 state.data = action.payload;
+                state.success = true
                 state.error = null
             })
             .addCase(fetchTask.rejected, (state, action) => {
@@ -91,6 +102,7 @@ export const taskSlice = createSlice({
             })
             .addCase(updateTask.fulfilled, (state, action) => {
                 state.status = IDLE;
+                state.data = action.payload
                 state.error = null
             })
     }
