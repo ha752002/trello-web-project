@@ -43,12 +43,24 @@ function Home(props) {
 
     useEffect(() => {
         dispatch(fetchTask());
+        console.log(data)
+
+        const tasksByColumn = {};
+        data.columns.forEach(column => {                                                                                                                                                                    //////////////////////;lkjl;
+            const columnName = column.column;
+            tasksByColumn[columnName] = [];
+        });
+
+        data.tasks.forEach(task => {
+            const column = task.column;
+            tasksByColumn[column] = [...tasksByColumn[column], task];
+        });
+
     }, [dispatch])
 
     useEffect(() => {
         status === PENDING ? dispatch(turnOn()) : dispatch(turnOff());
     }, [status]);
-
 
     useEffect(() => {
         if (error && error.code === 401) {
@@ -59,6 +71,11 @@ function Home(props) {
     }, [error]);
 
     function handleOnDragEnd(result) {
+        if (!result.destination) return;
+        const items = Array.from(characters);
+        const [reorderedItem] = items.splice(result.source.index, 1);
+        items.splice(result.destination.index, 0, reorderedItem);
+        updateCharacters(items);
     }
 
     return (
@@ -67,7 +84,7 @@ function Home(props) {
                 <h1>Final Space Characters</h1>
                 <DragDropContext onDragEnd={handleOnDragEnd}>
                     <Droppable droppableId="characters">
-                        {(provided) => (
+                         {(provided) => (
                             <ul className="characters" {...provided.droppableProps} ref={provided.innerRef}>
                                 {characters.map(({id, name, thumb}, index) => {
                                     return (

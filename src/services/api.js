@@ -12,13 +12,10 @@ const { SERVER_AUTH_API } = config;
 
 const axiosClient = axios.create(
     (() => {
-
         const headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         };
-
-
         return {
             baseURL: SERVER_AUTH_API,
             headers
