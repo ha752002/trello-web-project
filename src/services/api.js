@@ -25,7 +25,7 @@ const axiosClient = axios.create(
 
 axiosClient.interceptors.request.use(function (config) {
     const apiKey = localStorage.getItem('apiKey');
-    console.log(apiKey);
+    // console.log(apiKey);
     config.headers['X-API-KEY'] = apiKey;
     return config;
 });
@@ -41,7 +41,7 @@ export const apiClient = {
             if (requestParam) {
                 url = buildUrl(url, requestParam);
             }
-            console.log(url);
+            // console.log(url);
             const response = await axiosClient.get(url);
             // console.log(response);
             return response.data;

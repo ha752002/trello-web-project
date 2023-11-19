@@ -23,7 +23,7 @@ function Home(props) {
 
     useEffect(() => {
         status === PENDING ? dispatch(turnOn()) : dispatch(turnOff());
-        console.log(data)
+        // console.log(data)
     }, [status]);
 
     useEffect(() => {
@@ -58,6 +58,7 @@ function Home(props) {
     }, [success]);
 
     function handleOnDragEnd(result) {
+        console.log(result)
         if (!result.destination || (result.source.index === result.destination.index && result.source.droppableId === result.destination.droppableId)) {
             return;
         }
