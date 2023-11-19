@@ -24,9 +24,8 @@ const axiosClient = axios.create(
 );
 
 axiosClient.interceptors.request.use(function (config) {
-    const apiKey = localStorage.getItem('apiKey');
     // console.log(apiKey);
-    config.headers['X-API-KEY'] = apiKey;
+    config.headers['X-API-KEY'] = localStorage.getItem('apiKey');
     return config;
 });
 
@@ -38,35 +37,35 @@ function buildUrl(baseUrl, params) {
 
 export const apiClient = {
     get: async (url, requestParam = null) => {
-            if (requestParam) {
-                url = buildUrl(url, requestParam);
-            }
-            // console.log(url);
-            const response = await axiosClient.get(url);
-            // console.log(response);
-            return response.data;
+        if (requestParam) {
+            url = buildUrl(url, requestParam);
+        }
+        // console.log(url);
+        const response = await axiosClient.get(url);
+        // console.log(response);
+        return response.data;
     },
 
     post: async (url, body = {}) => {
-            const response = await axiosClient.post(url, body);
-            // console.log(response);
-            return response.data;
+        const response = await axiosClient.post(url, body);
+        // console.log(response);
+        return response.data;
     },
 
 
     patch: async (url, body = {}) => {
-            const response = await axiosClient.patch(url, body);
-            return response.data;
+        const response = await axiosClient.patch(url, body);
+        return response.data;
     },
 
 
     put: async (url, body = {}) => {
-            const response = await axiosClient.put(url, body);
-            return response.data;
+        const response = await axiosClient.put(url, body);
+        return response.data;
     },
 
     delete: async (url) => {
-            const response = await axiosClient.delete(url);
-            return response.data;
+        const response = await axiosClient.delete(url);
+        return response.data;
     }
 };

@@ -4,18 +4,19 @@ import Styles from './Login.module.scss/';
 import clsx from 'clsx';
 import {useDispatch, useSelector} from "react-redux";
 import {authLogin} from "../../redux/slice/authSlice.js";
-import { useForm} from "react-hook-form";
+import {useForm} from "react-hook-form";
 import {PENDING} from "../../constant/apiStatus.js";
 import {loadingSlice} from "../../redux/slice/loadingSlice.js";
 import {customToast} from "../../utils/toastUtil.js";
-import { object, string } from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import {object, string} from "yup";
+import {yupResolver} from "@hookform/resolvers/yup";
 
 const {turnOn, turnOff} = loadingSlice.actions;
 
 export const signUpFormSchema = object({
     email: string().email().required(),
 });
+
 function Login({toggleLoading}) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -27,16 +28,18 @@ function Login({toggleLoading}) {
     const {error, status, userInfo} = useSelector(state => state.auth)
     useEffect(() => {
         status === PENDING ? dispatch(turnOn()) : dispatch(turnOff());
+        // if (error) {
+        //     // console.log(1111111)
+        //     customToast(error.message)
+        // }
     }, [status]);
 
     useEffect(() => {
-        if (userInfo.apiKey) {
+        if (userInfo && userInfo.apiKey) {
             customToast("Đăng nhập thành công")
             navigate("/home")
-        } else if (error) {
-            customToast(error.message)
         }
-    }, [userInfo, error]);
+    }, [userInfo]);
 
 
     const onSubmit = (data) => {
@@ -44,9 +47,8 @@ function Login({toggleLoading}) {
     }
     return (
         <>
-
             <div className={clsx(Styles.form_login)}>
-                <div  className={clsx(Styles.overlay)}></div>
+                <div className={clsx(Styles.overlay)}></div>
                 <form onSubmit={handleSubmit(onSubmit)} className={clsx(Styles.form_login_wrapper)}>
                     <input
                         {...register("email")}

@@ -50,6 +50,19 @@ export const updateTask = createAsyncThunk("task/update", async (body, thunkApi)
         })
     }
 })
+export const initTask = createAsyncThunk("task/init", async (body, thunkApi) => {
+    try {
+        const response = await apiClient.post("/tasks", body);
+        const data = response.data
+        return resolveResponse(data)
+    } catch (e) {
+        console.log(e);
+        return thunkApi.rejectWithValue({
+            code: e.response.status,
+            message: e.response.data.message
+        })
+    }
+})
 export const taskSlice = createSlice({
     name: 'task',
     initialState,
@@ -67,40 +80,18 @@ export const taskSlice = createSlice({
 
             const [reorderedTask] = sourceColumn.tasks.splice(source.index, 1);
             reorderedTask.column = destinationColumn.column
-            destinationColumn.tasks.splice(destination.index, 0, reorderedTask)
-
-            const taskList = state.data.reduce((result, column) => {
-                const tasks = column.tasks.map(task => {
-                    return {
-                        column: task.column,
-                        content: task.content,
-                        columnName: column.columnName
-                    }
-                })
-                return [...result, ...tasks]
-            }, [])
-            apiClient.post("/tasks", taskList)
+            destinationColumn.tasks.splice(destination.index, 0, reorderedTask);
         },
         reorderColumn: (state, action) => {
             const source = action.payload.source;
             const destination = action.payload.destination;
             const [reorderedColumn] = state.data.splice(source.index, 1);
             state.data.splice(destination.index, 0, reorderedColumn);
-            const taskList = state.data.reduce((result, column) => {
-                const tasks = column.tasks.map(task => {
-                    return {
-                        column: task.column,
-                        content: task.content,
-                        columnName: column.columnName
-                    }
-                })
-                return [...result, ...tasks]
-            }, [])
-            apiClient.post("/tasks", taskList)
         },
         reset: (state) => {
-            state.error = null;
+            state.error = {};
             state.data = {};
+            state.success = false;
         }
     },
     extraReducers: (builder) => {
@@ -112,16 +103,37 @@ export const taskSlice = createSlice({
                 state.status = IDLE;
                 state.data = action.payload;
                 state.success = true
-                state.error = null
+                state.error = {}
             })
             .addCase(fetchTask.rejected, (state, action) => {
                 state.status = IDLE;
                 state.error = action.payload;
             })
+            .addCase(initTask.pending, (state) => {
+                state.status = PENDING;
+            })
+            .addCase(initTask.fulfilled, (state, action) => {
+                state.status = IDLE;
+                state.data = action.payload;
+                state.success = true
+                state.error = {}
+            })
+            .addCase(initTask.rejected, (state, action) => {
+                state.status = IDLE;
+                state.error = action.payload;
+            })
+            .addCase(updateTask.pending, (state) => {
+                state.status = PENDING;
+            })
             .addCase(updateTask.fulfilled, (state, action) => {
                 state.status = IDLE;
-                state.data = action.payload
-                state.error = null
+                // state.data = action.payload;
+                state.success = true
+                state.error = {}
+            })
+            .addCase(updateTask.rejected, (state, action) => {
+                state.status = IDLE;
+                state.error = action.payload;
             })
     }
 });
