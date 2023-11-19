@@ -32,10 +32,15 @@
 .btn_submit {
   width: 100%;
   padding: 10px;
-  background-color: rgb(8, 230, 255);
+  background-color: rgb(189 197 221);
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.btn_submit:hover {
+  background-color: cornflowerblue;
+
 }
 
 .form_login_input {
@@ -48,4 +53,15 @@
 
 .form_login_input::placeholder {
   color: #0a36e4;
+}
+
+
+.form_login_validate {
+  color: red;
+  font-style: italic;
+  margin-top: -1px;
+}
+
+.form_login_validate::first-letter {
+  text-transform: uppercase;
 }

@@ -15,6 +15,7 @@ const resolveResponse = (data) => {
         const tasks = data.tasks;
         return columns.map(column => {
             const tasksFiltered = tasks.filter(task => column.column === task.column)
+            console.log(tasksFiltered)
             return {
                 ...column,
                 tasks: tasksFiltered

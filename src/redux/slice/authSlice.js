@@ -6,7 +6,8 @@ import {IDLE, PENDING} from "../../constant/apiStatus.js";
 const initialState = {
     userInfo: {},
     error: null,
-    status: IDLE
+    status: IDLE,
+    errorForm : {},
 };
 
 export const authLogin = createAsyncThunk("auth/login", async (requestParams, thunkApi) => {

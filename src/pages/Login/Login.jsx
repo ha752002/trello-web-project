@@ -1,26 +1,34 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useReducer} from 'react';
 import {useNavigate} from 'react-router-dom';
 import Styles from './Login.module.scss/';
 import clsx from 'clsx';
 import {useDispatch, useSelector} from "react-redux";
 import {authLogin} from "../../redux/slice/authSlice.js";
-import {FormProvider, useForm} from "react-hook-form";
+import { useForm} from "react-hook-form";
 import {PENDING} from "../../constant/apiStatus.js";
 import {loadingSlice} from "../../redux/slice/loadingSlice.js";
 import {customToast} from "../../utils/toastUtil.js";
+import { object, string } from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const {turnOn, turnOff} = loadingSlice.actions;
 
+export const signUpFormSchema = object({
+    email: string().email().required(),
+});
 function Login({toggleLoading}) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
     const {register, handleSubmit, formState: {errors}} = useForm({
+        resolver: yupResolver(signUpFormSchema),
         criteriaMode: "all"
     });
     const {error, status, userInfo} = useSelector(state => state.auth)
     useEffect(() => {
         status === PENDING ? dispatch(turnOn()) : dispatch(turnOff());
     }, [status]);
+
     useEffect(() => {
         if (userInfo.apiKey) {
             customToast("Đăng nhập thành công")
@@ -29,6 +37,8 @@ function Login({toggleLoading}) {
             customToast(error.message)
         }
     }, [userInfo, error]);
+
+
     const onSubmit = (data) => {
         dispatch(authLogin(data))
     }
@@ -44,6 +54,7 @@ function Login({toggleLoading}) {
                         placeholder="Vui lòng nhập Email"
                         className={clsx(Styles.form_login_input)}
                     />
+                    {errors.email && <p className={clsx(Styles.form_login_validate)}>{errors.email.message}</p>}
                     <button type="submit" className={clsx(Styles.btn_submit)}>
                         Submit
                     </button>
