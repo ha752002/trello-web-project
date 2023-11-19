@@ -8,6 +8,11 @@
   position: relative;
 }
 
+.column_group {
+  display: flex;
+  flex-direction: row;
+}
+
 .overlay {
   position: absolute;
   top: 0;

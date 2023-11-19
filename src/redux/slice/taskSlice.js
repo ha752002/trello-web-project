@@ -54,7 +54,7 @@ export const taskSlice = createSlice({
     name: 'task',
     initialState,
     reducers: {
-        changeColumn: (state, action) => {
+        reorderTask: (state, action) => {
             const source = action.payload.source;
             const destination = action.payload.destination;
 
@@ -69,6 +69,23 @@ export const taskSlice = createSlice({
             reorderedTask.column = destinationColumn.column
             destinationColumn.tasks.splice(destination.index, 0, reorderedTask)
 
+            const taskList = state.data.reduce((result, column) => {
+                const tasks = column.tasks.map(task => {
+                    return {
+                        column: task.column,
+                        content: task.content,
+                        columnName: column.columnName
+                    }
+                })
+                return [...result, ...tasks]
+            }, [])
+            apiClient.post("/tasks", taskList)
+        },
+        reorderColumn: (state, action) => {
+            const source = action.payload.source;
+            const destination = action.payload.destination;
+            const [reorderedColumn] = state.data.splice(source.index, 1);
+            state.data.splice(destination.index, 0, reorderedColumn);
             const taskList = state.data.reduce((result, column) => {
                 const tasks = column.tasks.map(task => {
                     return {

@@ -8,9 +8,10 @@ import {useNavigate} from "react-router-dom";
 import {removeLocalStorage} from "../../utils/localStorage.js";
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 import "./Home.css"
+import Column from "./components/Column.jsx";
 
 const {turnOn, turnOff} = loadingSlice.actions;
-const {reset: taskReset, changeColumn} = taskSlice.actions;
+const {reset: taskReset, reorderTask, reorderColumn} = taskSlice.actions;
 
 function Home(props) {
     const dispatch = useDispatch();
@@ -62,7 +63,11 @@ function Home(props) {
         if (!result.destination || (result.source.index === result.destination.index && result.source.droppableId === result.destination.droppableId)) {
             return;
         }
-        dispatch(changeColumn(result))
+        if(result.type === 'column'){
+            dispatch(reorderColumn(result))
+        } else if(result.type){
+            dispatch(reorderTask(result))
+        }
     }
 
     return (
@@ -72,33 +77,18 @@ function Home(props) {
                 <h1>Trello</h1>
                 <header className="App-header">
                     <DragDropContext onDragEnd={handleOnDragEnd}>
-                        {data && data.length > 0 && data.map((column, index) => {
-                            return (<div className="column__wrapper" key={column.column} >
-                                <p>{column.column}</p>
-                                <Droppable droppableId={column.column}>
-                                    {(provided) => (
-                                        <ul className="characters" {...provided.droppableProps} ref={provided.innerRef}>
-                                            {column.tasks && column.tasks.map((task, index) => {
-                                                return (<Draggable key={task._id} draggableId={task._id} index={index}>
-                                                    {(provided) => (
-                                                        <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                                            <p>
-                                                                {task.content}
-                                                            </p>
-                                                        </li>)}
-                                                </Draggable>)
-                                            })}
-                                            {provided.placeholder}
-                                        </ul>
-
-                                    )}
-
-                                </Droppable>
-                            </div>)
-                        })}
+                        {data && <Droppable droppableId="all-columns" direction="horizontal" type="column">
+                            {(provided) =>
+                                <div {...provided.droppableProps} ref={provided.innerRef} className="column_group">
+                                    {data.length > 0 && data.map((column, index) => {
+                                        return <Column column={column} index={index} key={column.column}></Column>
+                                    })}
+                                    {provided.placeholder}
+                                </div>
+                            }
+                        </Droppable>}
                     </DragDropContext>
                 </header>
-
             </div>
         </>
 
