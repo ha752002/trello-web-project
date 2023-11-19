@@ -66,7 +66,6 @@ function Home(props) {
 
     return (
         <>
-            {/*<div className="overlay"></div>*/}
             <div className="App">
                 <div className="overlay"></div>
                 <h1>Trello</h1>

@@ -32,7 +32,6 @@ export const authSlice = createSlice({
     reducers: {
     },
     extraReducers: (builder) => {
-        // --- Xử lý trong reducer với case pending / fulfilled / rejected ---
         builder
             .addCase(authLogin.pending, (state) => {
                 state.status = PENDING;
