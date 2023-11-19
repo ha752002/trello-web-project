@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import Login from "../Login/Login.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchTask, taskSlice, updateTask} from "../../redux/slice/taskSlice.js";
 import {PENDING} from "../../constant/apiStatus.js";
@@ -7,8 +6,9 @@ import {loadingSlice} from "../../redux/slice/loadingSlice.js";
 import {useNavigate} from "react-router-dom";
 import {removeLocalStorage} from "../../utils/localStorage.js";
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
-import "./Home.css"
+import Styles from "./Home.module.scss" ;
 import Column from "./components/Column.jsx";
+import clsx from "clsx";
 
 const {turnOn, turnOff} = loadingSlice.actions;
 const {reset: taskReset, reorderTask, reorderColumn} = taskSlice.actions;
@@ -72,14 +72,14 @@ function Home(props) {
 
     return (
         <>
-            <div className="App">
-                <div className="overlay"></div>
+            <div  className={clsx(Styles.home)} >
+                <div className={clsx(Styles.overlay)} ></div>
                 <h1>Trello</h1>
-                <header className="App-header">
+                <header className={clsx(Styles.home_header)}>
                     <DragDropContext onDragEnd={handleOnDragEnd}>
                         {data && <Droppable droppableId="all-columns" direction="horizontal" type="column">
                             {(provided) =>
-                                <div {...provided.droppableProps} ref={provided.innerRef} className="column_group">
+                                <div {...provided.droppableProps} ref={provided.innerRef} className={clsx(Styles.column_group)} >
                                     {data.length > 0 && data.map((column, index) => {
                                         return <Column column={column} index={index} key={column.column}></Column>
                                     })}
