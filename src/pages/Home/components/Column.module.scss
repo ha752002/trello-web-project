@@ -3,6 +3,16 @@
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
 }
 
+.trash_icon{
+  width : 0.9rem;
+  position: absolute;
+  right: 0;
+}
+
+.column_title {
+  position: relative;
+}
+
 .column_wrapper {
   border: 1px solid white;
   padding: 20px;
