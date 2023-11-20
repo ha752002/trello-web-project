@@ -97,6 +97,14 @@
   transition: background-color 0.3s ease;
 }
 
+.characters li > div:nth-child(1) {
+  width: 80%;
+}
+
+.characters li > div:nth-child(2) {
+  width: 10%;
+}
+
 .characters li i {
   cursor: pointer;
 }
