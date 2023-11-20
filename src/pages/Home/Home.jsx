@@ -13,7 +13,7 @@ import {authSlice} from "../../redux/slice/authSlice.js";
 import {containSpecialCharacter} from "../../../../trello-web/src/utils/stringUtil.js";
 
 const {turnOn, turnOff} = loadingSlice.actions;
-const {reset: taskReset, reorderTask, reorderColumn, addColumn} = taskSlice.actions;
+const {reset: taskReset, reorderTask, reorderColumn, addColumn, removeTask} = taskSlice.actions;
 const {reset: loginReset} = authSlice.actions
 
 function Home(props) {

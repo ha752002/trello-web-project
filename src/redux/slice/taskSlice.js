@@ -1,7 +1,7 @@
 import {IDLE, PENDING} from "../../constant/apiStatus.js";
 import {createAsyncThunk, createSlice, current} from "@reduxjs/toolkit";
 import {apiClient} from "../../services/api.js";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import column from "../../pages/Home/components/Column.jsx";
 
 const initialState = {
@@ -95,17 +95,17 @@ export const taskSlice = createSlice({
             state.data = {};
             state.success = false;
         },
-        addColumn : (state) => {
+        addColumn: (state) => {
             state.data.push({
-                column : uuidv4(),
-                columnName : "New column",
+                column: uuidv4(),
+                columnName: "New column",
                 tasks: []
             })
         },
-        addTask:(state, action) => {
-            console.log(action.payload.column);
+        addTask: (state, action) => {
+            // console.log(action.payload.column);
             const exitColumn = state.data.find((column) => {
-                return column.column === action.payload.column
+                    return column.column === action.payload.column
                 }
             )
             exitColumn.tasks.push({
@@ -113,6 +113,9 @@ export const taskSlice = createSlice({
                 "content": "new Task",
                 "column": exitColumn.column,
             })
+        },
+        removeColumn: (state, action) => {
+            state.data.splice(action.payload,1)
         },
 
     },

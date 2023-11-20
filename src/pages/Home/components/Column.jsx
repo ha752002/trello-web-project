@@ -9,15 +9,18 @@ import {taskSlice} from "../../../redux/slice/taskSlice.js";
 
 function Column({column, index}) {
     const dispatch = useDispatch();
-    const {addTask} = taskSlice.actions;
+    const {addTask, removeColumn} = taskSlice.actions;
 
     return (<>
         <Draggable draggableId={column.column} index={index}>
             {(provided) => (<div className={clsx(Styles.column_wrapper)} key={column.column}
                                  ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
 
-                <div className={clsx(Styles.column_title)}>{column.columnName}
-                    <i className={clsx(Styles.trash_icon, 'fa', 'fa-solid', 'fa-trash')}></i>
+                <div className={clsx(Styles.column_title)}>
+                    <p contentEditable="true">{column.columnName}</p>
+                    <p onClick={() => {
+                        dispatch(removeColumn(index))
+                    }}><i className={clsx(Styles.trash_icon, 'fa', 'fa-solid', 'fa-trash')}></i></p>
                 </div>
                 <Droppable droppableId={column.column} type="task">
                     {(provided) => (
