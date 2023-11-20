@@ -1,7 +1,8 @@
 .home {
-  background-image: url("https://khoinguonsangtao.vn/wp-content/uploads/2021/10/background-anime-tuyet-dep.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
+  //background-image: url("https://khoinguonsangtao.vn/wp-content/uploads/2021/10/background-anime-tuyet-dep.jpg");
+  //background-repeat: no-repeat;
+  //background-size: cover;
+  background-color: #CD519D;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -28,11 +29,20 @@
 }
 
 h1 {
-  text-align: center;
   color: white;
   position: relative;
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   margin-bottom: 20px;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  bottom: -7px;
+  background-color: #ffffff7a;
 }
 
 
