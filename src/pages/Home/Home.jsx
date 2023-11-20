@@ -10,7 +10,7 @@ import Styles from "./Home.module.scss" ;
 import Column from "./components/Column.jsx";
 import clsx from "clsx";
 import {authSlice} from "../../redux/slice/authSlice.js";
-import {containSpecialCharacter} from "../../../../trello-web/src/utils/stringUtil.js";
+import {containUnicodeCharacter} from "../../utils/stringUtil.js";
 
 const {turnOn, turnOff} = loadingSlice.actions;
 const {reset: taskReset, reorderTask, reorderColumn, addColumn, removeTask} = taskSlice.actions;
@@ -30,7 +30,7 @@ function Home(props) {
 
     useEffect(() => {
         const apiKey = getLocalStorage("apiKey")
-        if (!apiKey || containSpecialCharacter(apiKey)) {
+        if (!apiKey || containUnicodeCharacter(apiKey)) {
             logout()
         }
     }, [])
