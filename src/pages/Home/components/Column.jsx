@@ -5,65 +5,74 @@ import clsx from "clsx";
 import Styles from "./Column.module.scss"
 import {useDispatch} from "react-redux";
 import {taskSlice} from "../../../redux/slice/taskSlice.js";
-import { EditText } from 'react-edit-text';
+import {EditText} from 'react-edit-text';
 import 'react-edit-text/dist/index.css';
 
 function Column({column, columnIndex}) {
     const dispatch = useDispatch();
-    const {addTask, removeColumn, editTitleColumn,editContentTask } = taskSlice.actions;
-    const handleEditTitleColumn =  (e) => {
-        const {name: id, value ,previousValue} = e;
-        if(value !== previousValue) {
+    const {addTask, removeTask, removeColumn, editTitleColumn, editContentTask} = taskSlice.actions;
+
+    const handleEditTitleColumn = (e) => {
+        const {name: id, value, previousValue} = e;
+        if (value !== previousValue) {
             dispatch(editTitleColumn({id, value}))
         }
     }
 
-    const handleEditTitleTask =  (e, index, columnIndex) => {
+    const handleEditTitleTask = (e, index, columnIndex) => {
         const {name: id, value, previousValue} = e;
-        if(value !== previousValue) {
+        if (value !== previousValue) {
             dispatch(editContentTask({
-                value , index, columnIndex
+                value, index, columnIndex
             }))
         }
     }
 
+    const handleRemoveTask = (index, columnIndex) => {
+        dispatch(removeTask({index, columnIndex}))
+    }
+
     return (<>
         <Draggable draggableId={column.column} index={columnIndex}>
-            {(provided) => (<div className={clsx(Styles.column_wrapper)} key={column.column}
-                                 ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+            {(provided) =>
+                (<div className={clsx(Styles.column_wrapper)}
+                      key={column.column}
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}>
+                    <div className={clsx(Styles.column_title)}>
 
-                <div className={clsx(Styles.column_title)}>
-                    {/*<p contentEditable="true">{column.columnName}*/}
-                    {/*</p>*/}
-                    <div>
-                        <EditText name={column.column} defaultValue={column.columnName} onSave={handleEditTitleColumn}  />
+                        <div>
+                            <EditText name={column.column} defaultValue={column.columnName} onSave={handleEditTitleColumn}/>
+                        </div>
+                        <div onClick={() => {dispatch(removeColumn(columnIndex))}}>
+                            <i className={clsx(Styles.trash_icon, 'fa', 'fa-solid', 'fa-trash')}></i>
+                        </div>
+
                     </div>
-                    <div onClick={() => {
-                        dispatch(removeColumn(columnIndex))
-                    }}><i className={clsx(Styles.trash_icon, 'fa', 'fa-solid', 'fa-trash')}></i></div>
-                </div>
-                <Droppable droppableId={column.column} type="task">
-                    {(provided) => (
-                        <>
-                            <ul className={clsx(Styles.characters)}  {...provided.droppableProps}
-                                ref={provided.innerRef}>
-                                {column.tasks && column.tasks.map((task, index) => {
-                                    return <Task task={task} index={index} key={task._id} onSave={(e) => {
-                                        handleEditTitleTask(e, index, columnIndex)
-                                    }}></Task>
-                                })}
-                                {provided.placeholder}
-                            </ul>
-                            <button onClick={() => {
-                                dispatch(addTask(column))
-                            }} className={clsx(Styles.button_add_task)}><i className="fa-solid fa-plus"></i> Add
-                                Task
-                            </button>
-                        </>
+                    <Droppable droppableId={column.column} type="task">
+                        {(provided) => (
+                            <>
+                                <ul className={clsx(Styles.characters)}
+                                    {...provided.droppableProps}
+                                    ref={provided.innerRef}>
+                                    {column.tasks && column.tasks.map((task, index) => {
+                                        return <Task task={task} index={index} key={task._id} removeTask={() => {
+                                            handleRemoveTask(index, columnIndex)
+                                        }} onSave={(e) => {
+                                            handleEditTitleTask(e, index, columnIndex)
+                                        }}></Task>
+                                    })}
+                                    {provided.placeholder}
+                                </ul>
+                                <button onClick={() => {dispatch(addTask(column))}} className={clsx(Styles.button_add_task)}>
+                                    <i className="fa-solid fa-plus"></i> Add Task
+                                </button>
+                            </>
 
-                    )}
-                </Droppable>
-            </div>)}
+                        )}
+                    </Droppable>
+                </div>)}
         </Draggable>
     </>);
 }

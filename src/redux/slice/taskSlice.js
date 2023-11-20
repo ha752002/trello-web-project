@@ -102,6 +102,7 @@ export const taskSlice = createSlice({
                 tasks: []
             })
         },
+
         addTask: (state, action) => {
             // console.log(action.payload.column);
             const exitColumn = state.data.find((column) => {
@@ -114,9 +115,15 @@ export const taskSlice = createSlice({
                 "column": exitColumn.column,
             })
         },
+
         removeColumn: (state, action) => {
             state.data.splice(action.payload, 1)
         },
+
+        removeTask :  (state, action) => {
+            state.data[action.payload.columnIndex].tasks.splice(action.payload.index, 1)
+        },
+
         editTitleColumn: (state, action) => {
             state.data.find((column) => {
                 return column.column === action.payload.id
@@ -127,8 +134,6 @@ export const taskSlice = createSlice({
             console.log(action.payload);
             state.data[action.payload.columnIndex].tasks[action.payload.index].content = action.payload.value
         }
-
-
     },
     extraReducers: (builder) => {
         builder

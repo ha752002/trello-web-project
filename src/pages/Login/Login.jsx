@@ -3,7 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import Styles from './Login.module.scss/';
 import clsx from 'clsx';
 import {useDispatch, useSelector} from "react-redux";
-import {authLogin} from "../../redux/slice/authSlice.js";
+import {authLogin, authSlice} from "../../redux/slice/authSlice.js";
 import {useForm} from "react-hook-form";
 import {PENDING} from "../../constant/apiStatus.js";
 import {loadingSlice} from "../../redux/slice/loadingSlice.js";
@@ -12,6 +12,7 @@ import {object, string} from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 
 const {turnOn, turnOff} = loadingSlice.actions;
+const {reset: loginReset} = authSlice.actions
 
 export const signUpFormSchema = object({
     email: string().email().required(),
@@ -37,6 +38,7 @@ function Login({toggleLoading}) {
     useEffect(() => {
         if (userInfo && userInfo.apiKey) {
             customToast("Đăng nhập thành công")
+            dispatch(loginReset());
             navigate("/home")
         }
     }, [userInfo]);
