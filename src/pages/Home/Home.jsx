@@ -88,7 +88,7 @@ function Home(props) {
                                      <div {...provided.droppableProps} ref={provided.innerRef}
                                      className={clsx(Styles.column_group)}>
                                     {data.length > 0 && data.map((column, index) => {
-                                        return <Column column={column} index={index} key={column.column}></Column>
+                                        return <Column column={column} columnIndex={index} key={column.column}></Column>
                                     })}
                                     {provided.placeholder}
                                      </div>

@@ -17,7 +17,7 @@ const resolveResponse = (data) => {
         const tasks = data.tasks;
         return columns.map(column => {
             const tasksFiltered = tasks.filter(task => column.column === task.column)
-            console.log(tasksFiltered)
+            // console.log(tasksFiltered)
             return {
                 ...column,
                 tasks: tasksFiltered
@@ -115,8 +115,19 @@ export const taskSlice = createSlice({
             })
         },
         removeColumn: (state, action) => {
-            state.data.splice(action.payload,1)
+            state.data.splice(action.payload, 1)
         },
+        editTitleColumn: (state, action) => {
+            state.data.find((column) => {
+                return column.column === action.payload.id
+            }).columnName = action.payload.value;
+        },
+
+        editContentTask: (state, action) => {
+            console.log(action.payload);
+            state.data[action.payload.columnIndex].tasks[action.payload.index].content = action.payload.value
+        }
+
 
     },
     extraReducers: (builder) => {

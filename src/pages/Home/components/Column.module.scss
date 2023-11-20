@@ -20,14 +20,14 @@
   flex-direction: row;
 }
 
-
-.column_title > p:nth-child(1){
+.column_title > div:nth-child(1){
    width: 90%;
 }
 
-.column_title > p:nth-child(2){
+.column_title > div:nth-child(2){
    width: 10%;
 }
+
 .column_wrapper {
   border: 1px solid white;
   padding: 20px;

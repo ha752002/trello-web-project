@@ -4,7 +4,7 @@ import {loadingSlice} from "./slice/loadingSlice.js";
 import {taskSlice, updateTask} from "./slice/taskSlice.js";
 import {apiClient} from "../services/api.js";
 import {customToast} from "../utils/toastUtil.js";
-const {reset: taskReset, reorderTask, reorderColumn, addTask,removeColumn} = taskSlice.actions;
+const {reset: taskReset, reorderTask, reorderColumn, addTask,removeColumn, editTitleColumn, editContentTask} = taskSlice.actions;
 
 const rootReducer = {
     auth: authSlice.reducer,
@@ -14,7 +14,7 @@ const rootReducer = {
 
 const taskListenerMiddleware = createListenerMiddleware()
 taskListenerMiddleware.startListening({
-    matcher: isAnyOf(reorderColumn, reorderTask, addTask, removeColumn),
+    matcher: isAnyOf(reorderColumn, reorderTask, addTask, removeColumn, editTitleColumn, editContentTask),
     effect: async (action, listenerApi) => {
         const taskList = listenerApi.getState().task.data.reduce((result, column) => {
             const tasks = column.tasks.map(task => {
