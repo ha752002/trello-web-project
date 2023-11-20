@@ -49,10 +49,12 @@ h1::after {
 
 .home_header {
   position: relative;
+  width: 100%;
   display: flex;
+  padding-left: 20px;
   flex-direction: row;
   overflow: auto hidden;
-  justify-content: center;
+  justify-content: flex-start;
   font-size: calc(10px + 1vmin);
   gap: 20px
 }
