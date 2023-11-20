@@ -9,6 +9,12 @@
   right: 0;
 }
 
+.button_add_task {
+  height: 75px;
+  padding: 10px 20px;
+}
+
+
 .column_title {
   position: relative;
 }
@@ -45,6 +51,8 @@
   list-style: none;
   padding-left: 0;
   min-width: 283px;
+  max-height: 400px;
+  overflow-y: scroll;
 }
 
 .characters li {

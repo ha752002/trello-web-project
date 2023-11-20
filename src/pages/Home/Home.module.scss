@@ -22,6 +22,11 @@
   background-color: rgb(0 0 0 / 25%);
 }
 
+.button_add_column {
+  height: 75px;
+  padding: 10px 20px;
+}
+
 h1 {
   text-align: center;
   color: white;
@@ -36,6 +41,7 @@ h1 {
   position: relative;
   display: flex;
   flex-direction: row;
+  overflow: auto hidden;
   justify-content: center;
   font-size: calc(10px + 1.5vmin);
   gap: 20px

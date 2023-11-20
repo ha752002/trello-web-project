@@ -1,6 +1,8 @@
 import {IDLE, PENDING} from "../../constant/apiStatus.js";
 import {createAsyncThunk, createSlice, current} from "@reduxjs/toolkit";
 import {apiClient} from "../../services/api.js";
+import { v4 as uuidv4 } from 'uuid';
+import column from "../../pages/Home/components/Column.jsx";
 
 const initialState = {
     data: null,
@@ -23,7 +25,6 @@ const resolveResponse = (data) => {
         });
     }
 }
-
 export const fetchTask = createAsyncThunk("task/fetch", async (requestParams = null, thunkApi) => {
     try {
         const response = await apiClient.get("/tasks");
@@ -68,6 +69,7 @@ export const taskSlice = createSlice({
     initialState,
     reducers: {
         reorderTask: (state, action) => {
+            console.log(action.payload)
             const source = action.payload.source;
             const destination = action.payload.destination;
 
@@ -92,7 +94,27 @@ export const taskSlice = createSlice({
             state.error = {};
             state.data = {};
             state.success = false;
-        }
+        },
+        addColumn : (state) => {
+            state.data.push({
+                column : uuidv4(),
+                columnName : "New column",
+                tasks: []
+            })
+        },
+        addTask:(state, action) => {
+            console.log(action.payload.column);
+            const exitColumn = state.data.find((column) => {
+                return column.column === action.payload.column
+                }
+            )
+            exitColumn.tasks.push({
+                "_id": uuidv4(),
+                "content": "new Task",
+                "column": exitColumn.column,
+            })
+        },
+
     },
     extraReducers: (builder) => {
         builder
