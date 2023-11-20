@@ -15,14 +15,13 @@ import {containUnicodeCharacter} from "../../utils/stringUtil.js";
 const {turnOn, turnOff} = loadingSlice.actions;
 const {reset: taskReset, reorderTask, reorderColumn, addColumn, removeTask} = taskSlice.actions;
 const {reset: loginReset} = authSlice.actions
-
 function Home(props) {
     const dispatch = useDispatch();
     const {data, error, status, success} = useSelector(state => state.task)
     const navigate = useNavigate();
 
     const logout = () => {
-        removeLocalStorage('apiKey', 'taskData')
+        removeLocalStorage('apiKey')
         dispatch(taskReset());
         dispatch(loginReset());
         navigate('/login')
@@ -30,14 +29,14 @@ function Home(props) {
 
     useEffect(() => {
         const apiKey = getLocalStorage("apiKey")
+        console.log(apiKey)
         if (!apiKey || containUnicodeCharacter(apiKey)) {
             logout()
+        } else{
+            dispatch(fetchTask());
         }
     }, [])
 
-    useEffect(() => {
-        dispatch(fetchTask());
-    }, [dispatch])
 
     useEffect(() => {
         status === PENDING ? dispatch(turnOn()) : dispatch(turnOff());
@@ -85,15 +84,15 @@ function Home(props) {
                         {data && <Droppable droppableId="all-columns" direction="horizontal" type="column">
                             {(provided) =>
                                 <>
-                                     <div {...provided.droppableProps} ref={provided.innerRef}
-                                     className={clsx(Styles.column_group)}>
-                                    {data.length > 0 && data.map((column, index) => {
-                                        return <Column column={column} columnIndex={index} key={column.column}></Column>
-                                    })}
-                                    {provided.placeholder}
-                                     </div>
-                                <button onClick={() => dispatch(addColumn())} className={clsx(Styles.button_add_column)}>  <i className="fa-solid fa-plus"></i> Add Column</button>
-                            </>
+                                    <div {...provided.droppableProps} ref={provided.innerRef}
+                                         className={clsx(Styles.column_group)}>
+                                        {data.length > 0 && data.map((column, index) => {
+                                            return <Column column={column} columnIndex={index} key={column.column}></Column>
+                                        })}
+                                        {provided.placeholder}
+                                    </div>
+                                    <button onClick={() => dispatch(addColumn())} className={clsx(Styles.button_add_column)}>  <i className="fa-solid fa-plus"></i> Add Column</button>
+                                </>
                             }
                         </Droppable>}
                     </DragDropContext>
