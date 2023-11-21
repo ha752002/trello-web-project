@@ -3,6 +3,7 @@ import {createAsyncThunk, createSlice, current} from "@reduxjs/toolkit";
 import {apiClient} from "../../services/api.js";
 import {v4 as uuidv4} from 'uuid';
 import column from "../../pages/Home/components/Column.jsx";
+import _debounce from "lodash/debounce";
 
 const initialState = {
     data: null,
@@ -38,7 +39,7 @@ export const fetchTask = createAsyncThunk("task/fetch", async (requestParams = n
         })
     }
 })
-export const updateTask = createAsyncThunk("task/update", async (body, thunkApi) => {
+export const updateTask = createAsyncThunk("task/update", _debounce(async (body, thunkApi) => {
     try {
         const response = await apiClient.post("/tasks", body);
         const data = response.data
@@ -50,7 +51,7 @@ export const updateTask = createAsyncThunk("task/update", async (body, thunkApi)
             message: e.response.data.message
         })
     }
-})
+},500))
 export const initTask = createAsyncThunk("task/init", async (body, thunkApi) => {
     try {
         const response = await apiClient.post("/tasks", body);
@@ -64,6 +65,9 @@ export const initTask = createAsyncThunk("task/init", async (body, thunkApi) => 
         })
     }
 })
+
+
+
 export const taskSlice = createSlice({
     name: 'task',
     initialState,
