@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {fetchTask, initTask, taskSlice, updateTask} from "../../redux/slice/taskSlice.js";
-import {PENDING} from "../../constant/apiStatus.js";
+import {FULFILLED, PENDING, REJECTED} from "../../constant/apiStatus.js";
 import {loadingSlice} from "../../redux/slice/loadingSlice.js";
 import {useNavigate} from "react-router-dom";
 import {getLocalStorage, removeLocalStorage} from "../../utils/localStorage.js";
@@ -41,17 +41,7 @@ function Home(props) {
     useEffect(() => {
         status === PENDING ? dispatch(turnOn()) : dispatch(turnOff());
         // console.log(data)
-    }, [status]);
-
-    useEffect(() => {
-        if (error && error.code === 401) {
-            console.log(error)
-            logout()
-        }
-    }, [error]);
-
-    useEffect(() => {
-        if (success && data && data.length === 0) {
+        if (status === FULFILLED && data && data.length === 0) {
             const taskList = [{
                 "column": "doing", "content": "Get Money", "columnName": "Doing"
             }, {
@@ -60,8 +50,12 @@ function Home(props) {
                 "column": "todo", "content": "Loading....", "columnName": "Todo"
             }]
             dispatch(initTask(taskList))
+        }else if(status ===  REJECTED && error && error.code === 401){
+            // console.log(error)
+            logout()
         }
-    }, [success]);
+    }, [status]);
+
 
     function handleOnDragEnd(result) {
         // console.log(result)

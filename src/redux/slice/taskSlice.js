@@ -1,4 +1,4 @@
-import {IDLE, PENDING} from "../../constant/apiStatus.js";
+import {FULFILLED, IDLE, PENDING, REJECTED} from "../../constant/apiStatus.js";
 import {createAsyncThunk, createSlice, current} from "@reduxjs/toolkit";
 import {apiClient} from "../../services/api.js";
 import {v4 as uuidv4} from 'uuid';
@@ -9,7 +9,6 @@ const initialState = {
     data: null,
     error: null,
     status: IDLE,
-    success: false,
 };
 
 const resolveResponse = (data) => {
@@ -97,7 +96,6 @@ export const taskSlice = createSlice({
         reset: (state) => {
             state.error = {};
             state.data = {};
-            state.success = false;
         },
         addColumn: (state) => {
             state.data.push({
@@ -145,39 +143,36 @@ export const taskSlice = createSlice({
                 state.status = PENDING;
             })
             .addCase(fetchTask.fulfilled, (state, action) => {
-                state.status = IDLE;
+                state.status = FULFILLED;
                 state.data = action.payload;
-                state.success = true
                 state.error = {}
             })
             .addCase(fetchTask.rejected, (state, action) => {
-                state.status = IDLE;
+                state.status = REJECTED;
                 state.error = action.payload;
             })
             .addCase(initTask.pending, (state) => {
                 state.status = PENDING;
             })
             .addCase(initTask.fulfilled, (state, action) => {
-                state.status = IDLE;
+                state.status = FULFILLED;
                 state.data = action.payload;
-                state.success = true
                 state.error = {}
             })
             .addCase(initTask.rejected, (state, action) => {
-                state.status = IDLE;
+                state.status = REJECTED;
                 state.error = action.payload;
             })
             .addCase(updateTask.pending, (state) => {
                 state.status = PENDING;
             })
             .addCase(updateTask.fulfilled, (state, action) => {
-                state.status = IDLE;
+                state.status = FULFILLED;
                 // state.data = action.payload;
-                state.success = true
                 state.error = {}
             })
             .addCase(updateTask.rejected, (state, action) => {
-                state.status = IDLE;
+                state.status = REJECTED;
                 state.error = action.payload;
             })
     }
