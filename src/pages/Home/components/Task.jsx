@@ -11,8 +11,8 @@ function Task({task, index, onSave, removeTask}) {
                        index={index}>
         {(provided) =>
             (<li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                    <div>
-                        <EditText defaultValue={task.content} onSave={onSave}/>
+                    <div >
+                        <EditText  className={clsx(Styles.input_task)} defaultValue={task.content} onSave={onSave}/>
                     </div>
                     <div onClick={()=>{
                         removeTask()
