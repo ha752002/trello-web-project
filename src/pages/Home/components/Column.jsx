@@ -28,15 +28,6 @@ function Column({column, columnIndex}) {
         }
     }
 
-    const handleBlurEditTitleTask = (e, index, columnIndex) => {
-        const {name: id, value, previousValue} = e;
-        if (value !== previousValue) {
-            dispatch(editContentTask({
-                value, index, columnIndex
-            }))
-        }
-    }
-
     const handleRemoveTask = (index, columnIndex) => {
         dispatch(removeTask({index, columnIndex}))
     }
@@ -76,9 +67,6 @@ function Column({column, columnIndex}) {
                                                          }}
                                                          onSave={(e) => {
                                                              handleEditTitleTask(e, index, columnIndex)
-                                                         }}
-                                                         onBlur={(e) => {
-                                                             handleBlurEditTitleTask(e, index, columnIndex)
                                                          }}
                                             ></Task>
                                         })}
