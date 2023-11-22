@@ -5,14 +5,14 @@ import 'react-edit-text/dist/index.css';
 import clsx from "clsx";
 import Styles from "./Column.module.scss";
 
-function Task({task, index, onSave, removeTask}) {
+function Task({task, index, onSave, removeTask,onBlur}) {
 
     return (<Draggable draggableId={task._id}
                        index={index}>
         {(provided) =>
             (<li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                     <div >
-                        <EditText  className={clsx(Styles.input_task)} defaultValue={task.content} onSave={onSave}/>
+                        <EditText  className={clsx(Styles.input_task)} defaultValue={task.content} onBlur={onBlur} onSave={onSave}/>
                     </div>
                     <div onClick={()=>{
                         removeTask()

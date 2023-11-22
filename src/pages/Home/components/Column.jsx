@@ -28,6 +28,15 @@ function Column({column, columnIndex}) {
         }
     }
 
+    const handleBlurEditTitleTask = (e, index, columnIndex) => {
+        const {name: id, value, previousValue} = e;
+        if (value !== previousValue) {
+            dispatch(editContentTask({
+                value, index, columnIndex
+            }))
+        }
+    }
+
     const handleRemoveTask = (index, columnIndex) => {
         dispatch(removeTask({index, columnIndex}))
     }
@@ -35,12 +44,12 @@ function Column({column, columnIndex}) {
     return (<>
         <Draggable draggableId={column.column} index={columnIndex}>
             {(provided) =>
-                (<div
-                    key={column.column}
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}>
-                    <div className={clsx(Styles.column_wrapper)}>
+                (<div>
+                    <div key={column.column}
+                         ref={provided.innerRef}
+                         {...provided.draggableProps}
+                         {...provided.dragHandleProps}
+                         className={clsx(Styles.column_wrapper)}>
                         <div className={clsx(Styles.column_title)}>
 
                             <div>
@@ -61,11 +70,17 @@ function Column({column, columnIndex}) {
                                         {...provided.droppableProps}
                                         ref={provided.innerRef}>
                                         {column.tasks && column.tasks.map((task, index) => {
-                                            return <Task task={task} index={index} key={task._id} removeTask={() => {
-                                                handleRemoveTask(index, columnIndex)
-                                            }} onSave={(e) => {
-                                                handleEditTitleTask(e, index, columnIndex)
-                                            }}></Task>
+                                            return <Task task={task} index={index} key={task._id}
+                                                         removeTask={() => {
+                                                             handleRemoveTask(index, columnIndex)
+                                                         }}
+                                                         onSave={(e) => {
+                                                             handleEditTitleTask(e, index, columnIndex)
+                                                         }}
+                                                         onBlur={(e) => {
+                                                             handleBlurEditTitleTask(e, index, columnIndex)
+                                                         }}
+                                            ></Task>
                                         })}
                                         {provided.placeholder}
                                     </ul>
