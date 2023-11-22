@@ -29,10 +29,6 @@ function Login({toggleLoading}) {
     const {error, status, userInfo} = useSelector(state => state.auth)
     useEffect(() => {
         status === PENDING ? dispatch(turnOn()) : dispatch(turnOff());
-        // if (error) {
-        //     // console.log(1111111)
-        //     customToast(error.message)
-        // }
     }, [status]);
 
     useEffect(() => {

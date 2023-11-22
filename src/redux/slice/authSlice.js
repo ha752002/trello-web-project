@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {apiClient} from "../../services/api.js";
 import {getLocalStorage, setLocalStorage} from "../../utils/localStorage.js";
-import {FULFILLED, IDLE, PENDING, REJECTED} from "../../constant/apiStatus.js";
+import {IDLE, PENDING} from "../../constant/apiStatus.js";
 
 const initialState = {
     userInfo: {},
@@ -41,12 +41,12 @@ export const authSlice = createSlice({
                 state.status = PENDING;
             })
             .addCase(authLogin.fulfilled, (state, action) => {
-                state.status = FULFILLED;
+                state.status = IDLE;
                 state.userInfo.apiKey = action.payload;
                 state.error = {};
             })
             .addCase(authLogin.rejected, (state, action) => {
-                state.status = REJECTED;
+                state.status = IDLE;
                 state.error = action.payload;
             })
     }

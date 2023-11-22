@@ -38,19 +38,20 @@ export const fetchTask = createAsyncThunk("task/fetch", async (requestParams = n
         })
     }
 })
-export const updateTask = createAsyncThunk("task/update", _debounce(async (body, thunkApi) => {
-    try {
-        const response = await apiClient.post("/tasks", body);
-        const data = response.data
-        return resolveResponse(data)
-    } catch (e) {
-        console.log(e);
-        return thunkApi.rejectWithValue({
-            code: e.response.status,
-            message: e.response.data.message
-        })
-    }
-},500))
+export const updateTask = createAsyncThunk("task/update",
+    async (body, thunkApi) => {
+        try {
+            const response = await apiClient.post("/tasks", body);
+            const data = response.data
+            return resolveResponse(data)
+        } catch (e) {
+            console.log(e);
+            return thunkApi.rejectWithValue({
+                code: e.response.status,
+                message: e.response.data.message
+            })
+        }
+    })
 export const initTask = createAsyncThunk("task/init", async (body, thunkApi) => {
     try {
         const response = await apiClient.post("/tasks", body);

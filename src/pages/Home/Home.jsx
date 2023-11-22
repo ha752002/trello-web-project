@@ -17,13 +17,13 @@ const {reset: taskReset, reorderTask, reorderColumn, addColumn, removeTask} = ta
 const {reset: loginReset} = authSlice.actions
 function Home(props) {
     const dispatch = useDispatch();
-    const {data, error, status, success} = useSelector(state => state.task)
+    const {data, error, status} = useSelector(state => state.task)
     const navigate = useNavigate();
 
     const logout = () => {
         removeLocalStorage('apiKey')
         dispatch(taskReset());
-        dispatch(loginReset());
+        // dispatch(loginReset());
         navigate('/login')
     }
 
@@ -55,7 +55,6 @@ function Home(props) {
             logout()
         }
     }, [status]);
-
 
     function handleOnDragEnd(result) {
         // console.log(result)
