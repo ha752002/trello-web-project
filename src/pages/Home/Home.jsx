@@ -40,7 +40,7 @@ function Home(props) {
 
     useEffect(() => {
         status === PENDING ? dispatch(turnOn()) : dispatch(turnOff());
-        // console.log(data)
+        console.log(status)
         if (status === FULFILLED && data && data.length === 0) {
             const taskList = [{
                 "column": "doing", "content": "Get Money", "columnName": "Doing"
@@ -51,7 +51,7 @@ function Home(props) {
             }]
             dispatch(initTask(taskList))
         }else if(status ===  REJECTED && error && error.code === 401){
-            // console.log(error)
+            console.log(error)
             logout()
         }
     }, [status]);
